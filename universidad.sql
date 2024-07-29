@@ -165,6 +165,18 @@ GROUP BY cu.id_curso
 ORDER BY promedio_calificaciones ASC;
 
 -- Estudiante y profesor con más cursos en común
+  -- Número máximo de cursos en común
+SELECT MAX(cursos_en_comun) AS max_cursos_en_comun
+FROM (
+    SELECT COUNT(*) AS cursos_en_comun
+    FROM Estudiantes e
+    JOIN Calificaciones c ON e.id_estudiante = c.id_estudiante
+    JOIN Cursos cu ON c.id_curso = cu.id_curso
+    JOIN Profesores p ON cu.id_profesor = p.id_profesor
+    GROUP BY e.id_estudiante, p.id_profesor
+) AS subquery;
+
+  -- número máximo de cursos en común para encontrar todos los estudiantes y profesores con ese número
 SELECT e.nombre AS nombre_estudiante, e.apellido AS apellido_estudiante, 
        p.nombre AS nombre_profesor, p.apellido AS apellido_profesor, 
        COUNT(*) AS cursos_en_comun
@@ -173,5 +185,14 @@ JOIN Calificaciones c ON e.id_estudiante = c.id_estudiante
 JOIN Cursos cu ON c.id_curso = cu.id_curso
 JOIN Profesores p ON cu.id_profesor = p.id_profesor
 GROUP BY e.id_estudiante, p.id_profesor
-ORDER BY cursos_en_comun DESC
-LIMIT 1;
+HAVING cursos_en_comun = (
+    SELECT MAX(cursos_en_comun)
+    FROM (
+        SELECT COUNT(*) AS cursos_en_comun
+        FROM Estudiantes e
+        JOIN Calificaciones c ON e.id_estudiante = c.id_estudiante
+        JOIN Cursos cu ON c.id_curso = cu.id_curso
+        JOIN Profesores p ON cu.id_profesor = p.id_profesor
+        GROUP BY e.id_estudiante, p.id_profesor
+    ) AS subquery
+);
