@@ -157,7 +157,7 @@ JOIN Calificaciones c ON e.id_estudiante = c.id_estudiante
 JOIN Cursos cu ON c.id_curso = cu.id_curso
 ORDER BY e.apellido, e.nombre, cu.nombre_curso;
 
--- Resumen de cursos y sus promedios, ordenados por el curso más desafiante
+-- Resumen de cursos y sus promedios, ordenados por el curso más dificil
 SELECT cu.nombre_curso, AVG(c.calificacion) AS promedio_calificaciones
 FROM Cursos cu
 JOIN Calificaciones c ON cu.id_curso = c.id_curso
